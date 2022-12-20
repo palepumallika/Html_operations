@@ -29,21 +29,40 @@ def insert_webpage(request):
         return HttpResponse('Webpage is inserted successfully')
     return render(request,'insert_webpage.html',d)
 
-def insert_accessrecords(request):
+
+def select_topic(request):
     topics=Topic.objects.all()
     d={'topics':topics}
-
     if request.method=='POST':
-        topic=request.POST['topic']
-        na=request.POST['na']
-        ur=request.POST['ur']
-        dt=request.POST['dt']
-        T=Topic.objects.get_or_create(topic_name=topic)[0]
-        T.save()
-        W=Webpage.objects.get_or_create(topic_name=T,name=na,url=ur)[0]
-        W.save()
-        A=AccessRecords.objects.get_or_create(name=na,date=dt)
-        A.save()
-        return HttpResponse('accessrecords is inserted successfully')
-    return render(request,'insert_accessrecords.html',d)
+        tn=request.POST.getlist('topic')
+        print(tn)
+
+        webpages=Webpage.objects.none()
+        for i in tn:
+            webpages=webpages|Webpage.objects.filter(topic_name=i)
+        data={'webpages':webpages}
+        return render(request,'display_webpage.html',data)
+    return render(request,'select_topic.html',d)
+
+def checkbox(request):
+    topics=Topic.objects.all()
+    d={'topics':topics}
+    
+    return render(request,'checkbox.html',d)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
